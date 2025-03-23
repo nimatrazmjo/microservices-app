@@ -1,0 +1,56 @@
+# Ignore node_modules in all directories
+**/node_modules/
+
+# Ignore environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Ignore build artifacts
+dist/
+build/
+out/
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore dependency directories
+jspm_packages/
+
+# Ignore npm/yarn cache directories
+.npm/
+.yarn/
+.yarn-cache/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore local development files
+.local/
+
+# Ignore coverage reports
+coverage/
+.nyc_output/
+
+# Ignore lock files (optional, depending on your team's preference)
+package-lock.json
+yarn.lock
+
+# Ignore TypeScript build artifacts
+*.tsbuildinfo
+
+# Ignore temporary files
+tmp/
+temp/
