@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "9229:9229" # Optional: For debugging
+    volumes:
+      - .:/app
+      - /app/node_modules # Isolate pnpm dependencies
+      - /app/.next # Cache Next.js builds
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true # Required for file watching in Docker
+      - WATCHPACK_POLLING=true
+    restart: unless-stopped

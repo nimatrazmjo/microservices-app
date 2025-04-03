@@ -1,0 +1,9 @@
+**/node_modules
+**/.next
+**/dist
+Dockerfile
+docker-compose.*.yml
+.env*.local
+.git
+.gitignore
+.npmrc

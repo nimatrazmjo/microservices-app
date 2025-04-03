@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:4000/api";
 
 export async function login(formData: FormData) {
-  const cookieStore = await cookies();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -60,7 +59,6 @@ export async function login(formData: FormData) {
 }
 
 export async function register(formData: FormData) {
-  const cookieStore = await cookies();
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -87,13 +85,13 @@ export async function register(formData: FormData) {
     if (!response.ok) {
       return { error: data.message || "Registration failed" };
     }
-
-    // After successful registration, redirect to login
-    redirect("/login?registered=true");
   } catch (error) {
     console.error("Registration error:", error);
     return { error: "An unexpected error occurred" };
   }
+
+  // After successful registration, redirect to login
+  redirect("/login?registered=true");
 }
 
 // Replace the logout function with this async version
@@ -108,7 +106,6 @@ export async function logout() {
 }
 
 export async function getUserData() {
-  const cookieStore = await cookies();
   const userDataCookie = (await cookies()).get("user-data");
 
   if (!userDataCookie) {
