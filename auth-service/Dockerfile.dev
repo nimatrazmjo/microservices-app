@@ -1,0 +1,12 @@
+FROM node:18-alpine
+WORKDIR /app
+
+# Install dependencies (including devDependencies)
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copy source code and .env
+COPY . .
+
+EXPOSE 3002
+CMD ["npm", "run", "dev"]

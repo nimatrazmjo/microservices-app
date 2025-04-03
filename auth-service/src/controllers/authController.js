@@ -4,10 +4,12 @@ const redisClient = require("../utils/redis");
 
 exports.register = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(email, password);
   try {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
+
+    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -23,12 +25,15 @@ exports.register = async (req, res) => {
 
     res.status(201).json({ token });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+
+  console.log(email, password);
 
   try {
     // Check if user exists
