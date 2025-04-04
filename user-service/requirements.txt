@@ -1,0 +1,9 @@
+fastapi==0.109.0
+uvicorn==0.27.0
+motor==3.3.2
+pymongo==4.5.0  # Critical addition for motor compatibility
+python-dotenv==1.0.0
+aio-pika==9.4.1
+python-multipart==0.0.6
+python-jose==3.3.0
+passlib==1.7.4

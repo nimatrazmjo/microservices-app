@@ -1,0 +1,39 @@
+# General
+**/.git
+**/.gitignore
+**/.DS_Store
+**/Thumbs.db
+
+# Node.js specific (for auth service)
+**/node_modules
+**/npm-debug.log
+**/.npm
+**/dist
+
+# Python specific (for user service)
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache
+**/.mypy_cache
+**/.venv
+**/venv
+**/env
+
+# IDE and editor files
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# Environment files (should be handled separately)
+**/.env
+**/.env.*
+**/secrets.*
+**/config.local.*
+
+# Logs and temp files
+**/*.log
+**/logs
+**/tmp
