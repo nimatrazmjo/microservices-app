@@ -20,6 +20,7 @@ class RabbitMQ:
                 timeout=5
             )
             self.channel = await self.connection.channel()
+            await self.channel.set_qos(prefetch_count=1)
             logger.info("RabbitMQ connection established")
             return self.channel
 
@@ -37,23 +38,3 @@ class RabbitMQ:
 
 # Singleton instance
 rabbitmq = RabbitMQ()
-
-# # app/core/rabbitmq.py
-# import aio_pika
-# from aio_pika.abc import AbstractRobustConnection
-# from app.core.config import get_settings
-
-# class RabbitMQManager:
-#     """Manages RabbitMQ connections and channels"""
-#     _connection: AbstractRobustConnection = None
-
-#     @classmethod
-#     async def get_connection(cls) -> AbstractRobustConnection:
-
-#         print("🔌 ------------------------------------------------------------...")
-#         print(get_settings().rabbitmq_url)
-
-#         if cls._connection is None or cls._connection.is_closed:
-#             cls._connection = await aio_pika.connect_robust('amqp://guest:guest@host.docker.internal:5672')
-#             print("✅ RabbitMQ connection established")
-#         return cls._connection

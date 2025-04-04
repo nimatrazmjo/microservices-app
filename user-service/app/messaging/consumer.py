@@ -1,5 +1,6 @@
 import json
 import logging
+import asyncio
 from aio_pika import IncomingMessage
 from app.db.mongodb import get_db
 from app.core.rabbitmq import rabbitmq
@@ -9,21 +10,24 @@ logger = logging.getLogger(__name__)
 async def handle_user_created(message: IncomingMessage):
     try:
         async with message.process():
-            # Parse the message body
             body = json.loads(message.body.decode())
+            logger.info(f"Received message: {body}")
 
-            # Extract the routing key components
-            event_type = message.routing_key.split('.')[0]  # "user_created"
-            user_id = message.routing_key.split('.')[1]     # user._id
+            # Extract data from message body
+            event_type = body.get("eventType")
+            user_id = body.get("userId")
+            user_data = body.get("data", {})
 
-            # The actual data is in the body
-            user_data = body
+            if not all([event_type, user_id]):
+                logger.error("Missing required fields in message")
+                await message.reject(requeue=False)
+                return
 
             logger.info(f"Processing {event_type} for user {user_id}")
 
             # Create/update profile in MongoDB
             db = await get_db()
-            await db.profiles.update_one(
+            result = await db.profiles.update_one(
                 {"user_id": user_id},
                 {
                     "$set": {
@@ -35,13 +39,16 @@ async def handle_user_created(message: IncomingMessage):
                 upsert=True
             )
 
-            logger.info(f"Updated profile for user {user_id}")
+            if result.upserted_id:
+                logger.info(f"Created new profile for user {user_id}")
+            else:
+                logger.info(f"Updated existing profile for user {user_id}")
 
-    except json.JSONDecodeError:
-        logger.error("Invalid message format")
+    except json.JSONDecodeError as e:
+        logger.error(f"Invalid message format: {e}")
         await message.reject(requeue=False)
     except Exception as e:
-        logger.error(f"Failed to process message: {e}")
+        logger.error(f"Failed to process message: {e}", exc_info=True)
         await message.reject(requeue=True)
 
 async def consume_user_events():
@@ -49,32 +56,37 @@ async def consume_user_events():
         try:
             channel = await rabbitmq.connect()
 
-            # Match the exchange type with publisher
+            # Declare the same exchange as in Node.js publisher
             exchange = await channel.declare_exchange(
-                "events",  # Match publisher exchange name
+                "user_events",  # Must match publisher's exchange name
                 type="topic",
                 durable=True
             )
 
-            # Queue with binding pattern matching publisher
+            # Declare queue with DLX support
             queue = await channel.declare_queue(
-                "user_events",
+                "user_service_queue",  # Unique queue name for this service
                 durable=True,
                 arguments={
-                    "x-dead-letter-exchange": "dlx.events",
-                    "x-message-ttl": 60000
+                    "x-dead-letter-exchange": "dlx.user_events",
+                    "x-message-ttl": 60000  # 60 seconds
                 }
             )
 
-            # Bind to user_created events with wildcard
-            await queue.bind(exchange, routing_key="user_created.*")
+            # Bind to user_created events (no wildcard as publisher uses simple event type)
+            await queue.bind(exchange, routing_key="user_created")
 
-            logger.info("Waiting for user_created events...")
+            logger.info("Waiting for user_created events... Press CTRL+C to exit")
 
             async with queue.iterator() as queue_iter:
                 async for message in queue_iter:
                     await handle_user_created(message)
 
+        except asyncio.CancelledError:
+            logger.info("Consumer was cancelled, shutting down...")
+            break
         except Exception as e:
-            logger.error(f"Consumer error: {e}")
+            logger.error(f"Consumer error: {e}", exc_info=True)
             await asyncio.sleep(5)  # Wait before reconnecting
+        finally:
+            await rabbitmq.close()
