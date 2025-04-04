@@ -1,15 +1,13 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const redisClient = require("../utils/redis");
+const { publisher } = require("../messeging/index");
 
 exports.register = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   try {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
-
-    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -17,7 +15,11 @@ exports.register = async (req, res) => {
     // Create new user
     const user = new User({ email, password });
     await user.save();
-
+    // publisher.emit("user_created", user);
+    publisher.publishEvent("user_created", user._id, {
+      name: user.name,
+      email,
+    });
     // Generate JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",

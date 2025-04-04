@@ -8,10 +8,10 @@ class Settings(BaseSettings):
     mongo_pass: str = "example"
 
     # RabbitMQ credentials
-    rabbitmq_url: str = "amqp://admin:admin123@host.docker.internal:5672"
+    rabbitmq_url: str = "amqp://guest:guest@host.docker.internal:5672"
     rabbitmq_exchange: str = "user_events"
-    rabbitmq_user: str = "admin"
-    rabbitmq_pass: str = "admin123"
+    rabbitmq_user: str = "guest"
+    rabbitmq_pass: str = "guest"
 
     class Config:
         env_file = ".env"

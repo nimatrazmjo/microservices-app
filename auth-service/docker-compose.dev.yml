@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   auth-service:
+    container_name: auth_service
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -22,6 +23,7 @@ services:
       - redis
 
   mongodb:
+    container_name: auth_db
     image: mongo:6
     ports:
       - "27017:27017"
@@ -32,6 +34,7 @@ services:
       - mongodb_data:/data/db
 
   redis:
+    container_name: auth_redis
     image: redis:7-alpine
     ports:
       - "6379:6379"

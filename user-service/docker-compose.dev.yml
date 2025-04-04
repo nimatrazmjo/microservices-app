@@ -1,31 +1,16 @@
 version: "3.8"
 
 services:
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-
   mongodb:
+    container_name: user_db
     image: mongo:6
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_user_data:/data/db
 
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
@@ -34,6 +19,7 @@ services:
       retries: 3
 
   user-service:
+    container_name: user_service
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -45,11 +31,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
     volumes:
       - ./:/app
 
 volumes:
-  mongodb_data:
-  rabbitmq_data:
+  mongodb_user_data:
