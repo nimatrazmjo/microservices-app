@@ -2,28 +2,31 @@ version: "3.8"
 
 services:
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3-management-alpine
     ports:
-      - "5674:5672"
-      - "15674:15672"
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 30s
       timeout: 10s
       retries: 3
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
   mongodb:
     image: mongo:6
     ports:
-      - "27018:27017"
+      - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS:-example}
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongodb_data:/data/db
+
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 30s
@@ -32,14 +35,13 @@ services:
 
   user-service:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile.dev
     ports:
       - "8000:8000"
     environment:
-      PYTHONUNBUFFERED: 1
-      MONGODB_URI: mongodb://${MONGO_USER:-root}:${MONGO_PASS:-example}@mongodb:27017/user?authSource=admin
-      RABBITMQ_URL: amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq
+      MONGODB_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/user?authSource=admin
+      RABBITMQ_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq
     depends_on:
       mongodb:
         condition: service_healthy
@@ -50,3 +52,4 @@ services:
 
 volumes:
   mongodb_data:
+  rabbitmq_data:
