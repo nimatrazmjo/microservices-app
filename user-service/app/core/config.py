@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     rabbitmq_user: str = "guest"
     rabbitmq_pass: str = "guest"
 
+    secret_key: str = "rqwerwqerwqr"  # Should be a long, random string
+
     class Config:
         env_file = ".env"
         env_file_encoding = 'utf-8'
