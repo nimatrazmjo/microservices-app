@@ -8,7 +8,7 @@ const MONGO_URI =
 
 // Connect to MongoDB
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI + "/users?authSource=admin")
   .then(async () => {
     try {
       await messaging.publisher.connect();
