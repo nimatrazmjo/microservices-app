@@ -4,6 +4,7 @@ from typing import Optional
 class UserProfileBase(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
+    email: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None
     date_of_birth: Optional[str] = None

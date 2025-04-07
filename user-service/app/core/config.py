@@ -3,7 +3,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     mongo_url: str = "mongodb://root:example@mongodb:27017"
-    mongo_db_name: str = "mongodb"
+    mongo_db_name: str = "users"
     mongo_user: str = "root"
     mongo_pass: str = "example"
 

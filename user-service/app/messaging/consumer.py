@@ -24,20 +24,24 @@ async def handle_user_created(message: IncomingMessage):
                 return
 
             logger.info(f"Processing {event_type} for user {user_id}")
-
             # Create/update profile in MongoDB
-            db = await get_db()
+            db = get_db()
             result = await db.profiles.update_one(
                 {"user_id": user_id},
                 {
                     "$set": {
-                        "name": user_data.get("name"),
+                        "name": user_data.get("name") or "",
                         "email": user_data.get("email"),
                         "profile_complete": False
                     }
                 },
                 upsert=True
             )
+
+            logger.info(f"Update result: acknowledged={result.acknowledged}, "
+                      f"matched_count={result.matched_count}, "
+                      f"modified_count={result.modified_count}, "
+                      f"upserted_id={result.upserted_id}")
 
             if result.upserted_id:
                 logger.info(f"Created new profile for user {user_id}")
