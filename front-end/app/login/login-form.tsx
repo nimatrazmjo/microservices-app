@@ -3,7 +3,7 @@
 import Link from "next/link"
 
 import { useState } from "react"
-import { login } from "../actions/auth"
+import { login } from "../../actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

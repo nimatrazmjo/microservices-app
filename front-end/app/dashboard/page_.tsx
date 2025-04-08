@@ -2,7 +2,7 @@
 import type { Metadata } from "next"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { User } from "lucide-react"
-import { getUserProfile } from '@/app/actions/profile'
+import { getUserProfile } from '@/actions/profile'
 import { redirect } from 'next/navigation'
 import { useProfile } from '@/context/user-context'
 import { LoadingPage } from '@/components/feedback/loading-page'

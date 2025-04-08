@@ -5,6 +5,8 @@ import { ErrorPage } from "@/components/feedback/error-page"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useProfile } from '@/context/user-context'
+import { ProfilePictureUpload } from '@/components/profile/profile-picture-upload'
+import { ProfileForm } from '@/components/profile/profile-form'
 
 export default function ProfilePage() {
   const { profile, isLoading, error, refreshProfile } = useProfile()
@@ -39,11 +41,11 @@ export default function ProfilePage() {
 
         <div className="grid gap-8 md:grid-cols-[300px_1fr]">
           <div>
-            {/* <ProfilePictureUpload profile={profile} /> */}
+            <ProfilePictureUpload profile={profile} />
           </div>
 
           <div>
-            {/* <ProfileForm profile={profile} /> */}
+            <ProfileForm profile={profile} />
           </div>
         </div>
       </div>

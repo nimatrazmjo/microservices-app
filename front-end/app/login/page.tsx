@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { isAuthenticated } from "../actions/auth"
+import { isAuthenticated } from "../../actions/auth"
 import LoginForm from "./login-form"
 
 export const metadata: Metadata = {

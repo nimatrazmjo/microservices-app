@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import { getUserProfile, type UserProfile } from "@/app/actions/profile"
+import { getUserProfile, type UserProfile } from "@/actions/profile"
 
 // Define the shape of the context
 interface ProfileContextType {
