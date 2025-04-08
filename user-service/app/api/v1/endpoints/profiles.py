@@ -11,6 +11,12 @@ from bson import ObjectId
 
 router = APIRouter(prefix="/profiles", tags=["profiles"])
 
+# list all profiles
+@router.get("/list", response_model=list[UserProfileInDB])
+async def list_profiles(db=Depends(get_db)):
+    profiles = await db.profiles.find().to_list(length=None)
+    return [UserProfileInDB(**profile) for profile in profiles]
+
 @router.post("/", response_model=UserProfileInDB, status_code=status.HTTP_201_CREATED)
 async def create_profile(
     profile: UserProfileCreate,
@@ -36,7 +42,6 @@ async def get_my_profile(
     auth: Annotated[dict, Depends(verify_token)],
     db=Depends(get_db)
 ):
-    print(auth)
     """Get the current user's profile"""
     profile = await db.profiles.find_one({"user_id": auth["user_id"]})
     if not profile:

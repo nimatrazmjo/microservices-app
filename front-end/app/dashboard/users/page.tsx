@@ -13,7 +13,7 @@ export default function UsersPage() {
           <h1 className="text-3xl font-bold tracking-tight">Users</h1>
           <p className="text-muted-foreground">Manage your users and their permissions.</p>
         </div>
-        <Link href="/users/new">
+        <Link href="#">
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add User

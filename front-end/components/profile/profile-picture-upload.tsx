@@ -108,7 +108,6 @@ export function ProfilePictureUpload({ profile }: ProfilePictureUploadProps) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
               className="w-full"
             >

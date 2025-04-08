@@ -4,67 +4,24 @@ import { useState, useEffect } from "react"
 import { UserCard } from "./user-card"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
-
+import { getProfiles, UserProfile } from '@/actions/profile'
 // Mock user data - in a real app, this would come from an API
-const mockUsers = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Admin",
-    status: "Active",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "User",
-    status: "Active",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    role: "Editor",
-    status: "Inactive",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "4",
-    name: "Alice Williams",
-    email: "alice@example.com",
-    role: "User",
-    status: "Active",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "5",
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    role: "User",
-    status: "Pending",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-]
+
 
 export function UserList() {
-  const [users, setUsers] = useState(mockUsers)
+  const [users, setUsers] = useState<UserProfile[]>()
   const [searchTerm, setSearchTerm] = useState("")
 
   // Filter users based on search term
   useEffect(() => {
-    if (searchTerm) {
-      const filtered = mockUsers.filter(
-        (user) =>
-          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchTerm.toLowerCase()),
-      )
-      setUsers(filtered)
-    } else {
-      setUsers(mockUsers)
+    const fetchProfile = async () => {
+      const profiles = await getProfiles();
+      if (profiles) {
+        setUsers(profiles);
+      }
     }
+
+    fetchProfile();
   }, [searchTerm])
 
   return (
@@ -80,12 +37,12 @@ export function UserList() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {users.map((user) => (
-          <UserCard key={user.id} user={user} />
+        {users?.map((user) => (
+          <UserCard key={user.user_id} user={user} />
         ))}
       </div>
 
-      {users.length === 0 && (
+      {users?.length === 0 && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <p className="text-lg font-medium">No users found</p>
           <p className="text-muted-foreground">Try adjusting your search terms</p>

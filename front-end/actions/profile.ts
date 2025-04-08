@@ -297,3 +297,25 @@ export async function deleteProfile(): Promise<{
     return { error: "An unexpected error occurred" };
   }
 }
+
+/**
+ * get users profile
+ */
+
+export async function getProfiles(): Promise<UserProfile[] | null> {
+  try {
+    const response = await fetch(`${PROFILE_API_URL}/list`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      return null;
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error getting users:", error);
+    return null;
+  }
+}
