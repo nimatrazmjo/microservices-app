@@ -1,0 +1,71 @@
+# .dockerignore
+
+# Ignore all files by default
+*
+
+# Allow these specific files and directories
+!app/
+!requirements.txt
+!Dockerfile*
+!docker-compose*
+!.env*
+
+# Development specific exceptions
+!README.md
+!setup.py
+
+# Python specific ignores and nested folder
+*/**/__pycache__
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.python-version
+
+# Testing and CI ignores
+tests/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Environment and IDE files
+.env
+.venv/
+venv/
+.env.local
+.env.development
+.env.production
+.env.test
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build and dependency ignores
+build/
+dist/
+*.log
+logs/
+
+# Git ignores
+.git/
+.gitignore
+.gitmodules
+
+# Documentation ignores
+docs/
+*.md
+
+# Database files
+*.db
+*.sqlite3
+
+# Node.js ignores (if you have frontend)
+node_modules/
+npm-debug.log
+
+# macOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
