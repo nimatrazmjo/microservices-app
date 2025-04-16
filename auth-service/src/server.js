@@ -3,9 +3,19 @@ const messaging = require("./messeging");
 const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
-const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://root:example@mongodb:27017";
 
+const MONGO_USERNAME = process.env.MONGO_USERNAME;
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+const DB = process.env.MONGO_DB_NAME;
+console.log(MONGO_USERNAME, MONGO_PASSWORD, DB);
+if (!MONGO_USERNAME || !MONGO_PASSWORD || !DB) {
+  throw new Error(
+    "MONGO_USERNAME, MONGO_PASSWORD, and DB environment variables are required"
+  );
+  exit(1);
+}
+const MONGO_URI = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@auth-db:27017`;
+console.log(MONGO_URI);
 // Connect to MongoDB
 mongoose
   .connect(MONGO_URI + "/users?authSource=admin")

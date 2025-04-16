@@ -15,7 +15,9 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3002
-      - MONGO_URI=mongodb://root:example@mongodb:27017
+      - MONGO_DB_NAME=users
+      - MONGO_USERNAME=root
+      - MONGO_PASSWORD=example
       - JWT_SECRET=rqwerwqerwqr
       - REDIS_URL=redis://redis:6379
     depends_on:

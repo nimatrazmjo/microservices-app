@@ -21,6 +21,7 @@ USER expressuser
 COPY --from=builder --chown=expressuser /app/node_modules ./node_modules
 COPY --from=builder --chown=expressuser /app/src ./src
 COPY --from=builder --chown=expressuser /app/.env ./
+COPY --from=builder --chown=expressuser /app/package.json ./
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s \
