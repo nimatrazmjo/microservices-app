@@ -25,12 +25,12 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_SECRET
-            - name: MONGO_USERNAME
+            - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
                   name: auth-db-secret
                   key: MONGO_INITDB_ROOT_USERNAME
-            - name: MONGO_PASSWORD
+            - name: MONGO_PASS
               valueFrom:
                 secretKeyRef:
                   name: auth-db-secret
