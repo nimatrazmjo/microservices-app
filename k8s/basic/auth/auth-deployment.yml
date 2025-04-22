@@ -35,6 +35,10 @@ spec:
                 secretKeyRef:
                   name: auth-db-secret
                   key: MONGO_INITDB_ROOT_PASSWORD
+            - name: MONGO_HOST
+              value: "auth-db"
+            - name: MONGO_PORT
+              value: "27017"
             - name: REDIS_URL
               value: "redis://redis:6379"
             - name: MONGO_DB_NAME
@@ -55,7 +59,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-service
+  name: auth
 spec:
   selector:
     app: auth

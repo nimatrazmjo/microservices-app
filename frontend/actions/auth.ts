@@ -73,7 +73,7 @@ export async function register(formData: FormData) {
   }
 
   try {
-    const response = await fetch(`${AUTH_API_URL}/auth/register`, {
+    const response = await fetch(`${AUTH_API_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
@@ -134,7 +134,7 @@ export async function validateSession() {
   }
 
   try {
-    const response = await fetch(`${AUTH_API_URL}/auth/validate`, {
+    const response = await fetch(`${AUTH_API_URL}/api/auth/validate`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.value}`,
