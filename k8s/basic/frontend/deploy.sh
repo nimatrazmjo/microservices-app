@@ -1,26 +1,32 @@
 #!/bin/bash
 
-# Navigate to the frontend directory (assuming this script is run from k8s/basic/frontend)
-cd ../../..
-pwd
-# Build the Docker image for frontend
-echo "Building Docker image for frontend..."
-docker build -t frontend:dev -f ./frontend/Dockerfile.dev ./frontend/
+# Get the absolute path to the project root directory
+ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)
 
-# Check if the build was successful
-if [ $? -ne 0 ]; then
+echo "🔹 [Frontend Service] Starting deployment"
+echo "🔹 Project root: $ROOT_DIR"
+
+# Validate required directories exist
+if [[ ! -d "$ROOT_DIR/frontend" ]]; then
+    echo "❌ Error: Frontend directory not found at $ROOT_DIR/frontend"
+    exit 1
+fi
+
+# Build Docker image
+echo "🔹 Building Docker image..."
+docker build \
+    -t frontend:dev \
+    -f "$ROOT_DIR/frontend/Dockerfile.dev" \
+    "$ROOT_DIR/frontend/" || {
     echo "❌ Docker build failed"
     exit 1
-fi
+}
 
-# Apply the frontend deployment
-echo "Applying frontend deployment..."
-kubectl apply -f k8s/basic/frontend/frontend-deployment.yml
-
-# Check if the deployment was successful
-if [ $? -ne 0 ]; then
-    echo " ❌ kubectl apply failed"
+# Apply Kubernetes configurations
+echo "🔹 Applying Kubernetes deployments..."
+kubectl apply -f "$ROOT_DIR/k8s/basic/frontend/frontend-deployment.yml" || {
+    echo "❌ kubectl apply failed for frontend deployment"
     exit 1
-fi
+}
 
-echo "Frontend deployment completed successfully! "
+echo "✅ [Frontend Service] Deployment completed successfully!"

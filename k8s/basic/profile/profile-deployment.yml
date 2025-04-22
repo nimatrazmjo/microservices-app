@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: profile
+  name: profile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: profile
+    spec:
+      containers:
+        - image: profile:dev
+          imagePullPolicy: Never
+          name: profile
+          ports:
+            - containerPort: 8000
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: auth-db-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-db-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: REDIS_URL
+              value: "redis://redis:6379"
+            - name: MONGO_DB_NAME
+              value: "profile"
+            - name: MONGO_HOST
+              value: "auth-db"
+            - name: MONGO_PORT
+              value: "27017"
+            - name: NODE_ENV
+              value: development
+            - name: RABBITMQ_USER
+              value: "guest"
+            - name: RABBITMQ_PASS
+              value: "guest"
+            - name: RABBITMQ_HOST
+              value: "my-rabbit"
+            - name: RABBITMQ_PORT
+              value: "5672"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: profile
+  name: profile
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: profile
+status:
+  loadBalancer: {}
