@@ -8,11 +8,21 @@ class Publisher {
   }
 
   async connect() {
-    if (!process.env.RABBITMQ_URL) {
-      throw new Error("RABBITMQ_URL environment variable is not set");
+    const RABBIT_USER = process.env.RABBITMQ_USER;
+    const RABBIT_PASS = process.env.RABBITMQ_PASS;
+    const RABBIT_HOST = process.env.RABBITMQ_HOST;
+    const RABBIT_PORT = process.env.RABBITMQ_PORT;
+
+    if (!RABBIT_USER || !RABBIT_PASS || !RABBIT_HOST || !RABBIT_PORT) {
+      throw new Error(
+        "RABBITMQ_USER, RABBITMQ_PASS, RABBITMQ_HOST, and RABBITMQ_PORT environment variables are required"
+      );
     }
+    const RABBITMQ_URL = `amqp://${RABBIT_USER}:${RABBIT_PASS}@${RABBIT_HOST}:${RABBIT_PORT}`;
+    console.log(RABBIT_HOST, "RABBIT_HOST");
+    console.log(RABBITMQ_URL, "RABBITMQ_URL");
     console.log("Connecting to RabbitMQ.............................");
-    this.connection = await amqp.connect(process.env.RABBITMQ_URL);
+    this.connection = await amqp.connect(RABBITMQ_URL);
     this.channel = await this.connection.createChannel();
     await this.channel.assertExchange("user_events", "topic", {
       durable: true,
