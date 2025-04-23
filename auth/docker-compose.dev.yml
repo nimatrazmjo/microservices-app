@@ -18,8 +18,14 @@ services:
       - MONGO_DB_NAME=users
       - MONGO_USERNAME=root
       - MONGO_PASSWORD=example
+      - MONGO_HOST=host.docker.internal
+      - MONGO_PORT=27017
       - JWT_SECRET=rqwerwqerwqr
       - REDIS_URL=redis://redis:6379
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - RABBITMQ_HOST=host.docker.internal
+      - RABBITMQ_PORT=5672
     depends_on:
       - mongodb
       - redis
@@ -36,7 +42,7 @@ services:
       - mongodb_data:/data/db
 
   redis:
-    container_name: auth_redis
+    container_name: redis
     image: redis:7-alpine
     ports:
       - "6379:6379"

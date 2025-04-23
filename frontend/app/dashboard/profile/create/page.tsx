@@ -1,10 +1,10 @@
 "use client"
 import { CreateProfileForm } from "@/components/profile/create-profile-form"
 import { ProfileSkeleton } from "@/components/skeletons/profile-skeleton"
-import { useProfile } from "@/contexts/profile-context"
 import { ErrorPage } from "@/components/feedback/error-page"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { useProfile } from '@/context/user-context'
 
 export default function CreateProfilePage() {
   const { profile, isLoading, error, refreshProfile } = useProfile()

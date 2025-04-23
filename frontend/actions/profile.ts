@@ -3,10 +3,11 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { getCurrentUserId } from "@/actions/auth-utils";
 
 // Profile service URL
 const PROFILE_API_URL =
-  process.env.PROFILE_API_URL || "http://host.docker.internal:8000/profiles";
+  process.env.PROFILE_API_URL || "http://host.docker.internal:8000";
 
 // Profile interface based on the provided structure
 export interface UserProfile {
@@ -35,7 +36,7 @@ export async function getUserProfile(): Promise<{
     if (!authToken) {
       return { error: "Not authenticated" };
     }
-    const response = await fetch(`${PROFILE_API_URL}/`, {
+    const response = await fetch(`${PROFILE_API_URL}/profiles/`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${authToken.value}`,
@@ -99,7 +100,7 @@ export async function updateProfile(
       return { error: "Name and email are required" };
     }
 
-    const response = await fetch(`${PROFILE_API_URL}/`, {
+    const response = await fetch(`${PROFILE_API_URL}/profiles/`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${authToken.value}`,
@@ -164,7 +165,7 @@ export async function uploadProfilePicture(
     const uploadFormData = new FormData();
     uploadFormData.append("profile_picture", file);
 
-    const response = await fetch(`${PROFILE_API_URL}/upload-picture`, {
+    const response = await fetch(`${PROFILE_API_URL}/profiles/upload-picture`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${authToken.value}`,
@@ -208,11 +209,15 @@ export async function createProfile(
   try {
     const cookieStore = await cookies();
     const authToken = cookieStore.get("auth-token");
-
+    // get token payload
     if (!authToken) {
       return { error: "Not authenticated" };
     }
 
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      return { error: "Invalid or expired token" };
+    }
     // Extract profile data from form
     const profileData = {
       first_name: formData.get("first_name") as string,
@@ -221,6 +226,7 @@ export async function createProfile(
       phone: formData.get("phone") as string,
       address: formData.get("address") as string,
       date_of_birth: formData.get("date_of_birth") as string,
+      user_id: userId,
     };
 
     // Validate required fields
@@ -231,8 +237,7 @@ export async function createProfile(
     ) {
       return { error: "Name and email are required" };
     }
-
-    const response = await fetch(`${PROFILE_API_URL}/`, {
+    const response = await fetch(`${PROFILE_API_URL}/profiles/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${authToken.value}`,
@@ -274,7 +279,7 @@ export async function deleteProfile(): Promise<{
       return { error: "Not authenticated" };
     }
 
-    const response = await fetch(`${PROFILE_API_URL}/`, {
+    const response = await fetch(`${PROFILE_API_URL}/profiles/`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${authToken.value}`,
@@ -304,7 +309,7 @@ export async function deleteProfile(): Promise<{
 
 export async function getProfiles(): Promise<UserProfile[] | null> {
   try {
-    const response = await fetch(`${PROFILE_API_URL}/list`, {
+    const response = await fetch(`${PROFILE_API_URL}/profiles/list`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -23,10 +23,11 @@ async def create_profile(
     auth: Annotated[dict, Depends(verify_token)],
     db=Depends(get_db)
 ):
+    print('Nimat razmjo')
     """Create a new user profile"""
     # The user_id comes from the JWT token
     profile.user_id = auth["user_id"]
-
+    ConnectionResetError
     if await db.profiles.find_one({"user_id": profile.user_id}):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

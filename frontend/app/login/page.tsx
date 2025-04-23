@@ -9,11 +9,12 @@ export const metadata: Metadata = {
   description: "Login to your account",
 }
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: { registered?: string }
-}) {
+export default async function LoginPage(
+  props: {
+    searchParams: Promise<{ registered?: string }>
+  }
+) {
+  const searchParams = await props.searchParams;
   // Check if user is already authenticated
   const authenticated = await isAuthenticated()
   if (authenticated) {

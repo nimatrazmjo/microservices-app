@@ -4,7 +4,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 // Replace with your actual auth service URL
-const AUTH_API_URL = process.env.AUTH_API_URL || "http://localhost:4000/api";
+const AUTH_API_URL =
+  process.env.AUTH_API_URL || "http://host.docker.internal:3002";
 
 export async function login(formData: FormData) {
   const email = formData.get("email") as string;
@@ -13,9 +14,9 @@ export async function login(formData: FormData) {
   if (!email || !password) {
     return { error: "Email and password are required" };
   }
-
+  console.log(AUTH_API_URL, "AUTH_API_URL");
   try {
-    const response = await fetch(`${AUTH_API_URL}/auth/login`, {
+    const response = await fetch(`${AUTH_API_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -72,6 +73,7 @@ export async function register(formData: FormData) {
     return { error: "Passwords do not match" };
   }
 
+  console.log(AUTH_API_URL, "AUTH_API_URL");
   try {
     const response = await fetch(`${AUTH_API_URL}/api/auth/register`, {
       method: "POST",
