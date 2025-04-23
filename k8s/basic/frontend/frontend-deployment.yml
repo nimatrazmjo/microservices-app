@@ -25,9 +25,9 @@ spec:
           terminationMessagePolicy: File
           env:
             - name: AUTH_API_URL
-              value: /auth
+              value: http://auth:3002
             - name: PROFILE_API_URL
-              value: /profile
+              value: http://profile:8000
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
